@@ -1,5 +1,5 @@
 # Use the official Node.js image as a base
-FROM node:16
+FROM node:18
 
 # Install necessary dependencies
 RUN apt-get update && apt-get install -y \
@@ -10,9 +10,18 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     && apt-get clean
 
-# Clear npm cache and install Puppeteer
+# Clear npm cache and debug
 RUN npm cache clean --force && \
+    npm config set cache /tmp/empty-cache --global
+
+# Create a separate directory for Puppeteer installation
+WORKDIR /puppeteer-install
+RUN npm init -y && \
     npm install puppeteer --no-optional --legacy-peer-deps
+
+# Copy Puppeteer to global node_modules
+RUN mkdir -p /usr/local/lib/node_modules && \
+    cp -r node_modules/puppeteer /usr/local/lib/node_modules/
 
 # Install noVNC
 RUN mkdir -p /opt/novnc/utils/websockify \
