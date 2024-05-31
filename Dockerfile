@@ -7,15 +7,17 @@ RUN apt-get update && apt-get install -y \
     x11vnc \
     fluxbox \
     wget \
-    supervisor
+    supervisor \
+    && apt-get clean
+
+# Clear npm cache and install Puppeteer
+RUN npm cache clean --force && \
+    npm install puppeteer --no-optional --legacy-peer-deps
 
 # Install noVNC
 RUN mkdir -p /opt/novnc/utils/websockify \
     && wget -qO- https://github.com/novnc/noVNC/archive/v1.1.0.tar.gz | tar xz --strip 1 -C /opt/novnc \
     && wget -qO- https://github.com/novnc/websockify/archive/v0.9.0.tar.gz | tar xz --strip 1 -C /opt/novnc/utils/websockify
-
-# Install Puppeteer
-RUN npm install puppeteer --no-optional --legacy-peer-deps
 
 # Set up the VNC server and noVNC
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
