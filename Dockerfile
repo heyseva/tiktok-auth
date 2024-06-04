@@ -17,7 +17,8 @@ RUN npm cache clean --force && \
 # Create a separate directory for Puppeteer installation
 WORKDIR /puppeteer-install
 RUN npm init -y && \
-    npm install puppeteer --no-optional --legacy-peer-deps
+    npm install puppeteer --no-optional --legacy-peer-deps && \
+    npm install express
 
 # Copy Puppeteer to global node_modules
 RUN mkdir -p /usr/local/lib/node_modules && \
